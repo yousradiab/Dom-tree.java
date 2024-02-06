@@ -5,9 +5,12 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public abstract class Tag {
+public abstract class Tag implements Comparable<Tag> {
 
+    //sætter tag id for hvert tag.
+    private static int nextId = 0;
     private String id;
     private String tagName;
     private String text;
@@ -17,8 +20,15 @@ public abstract class Tag {
 
 
     public Tag() {
+        //sætter tag id for hvert tag.
+        id = "" + Tag.nextId++;
         children = new ArrayList<>();
 
+    }
+
+    @Override
+    public int compareTo(Tag o) {
+        return this.getId().compareTo(o.getId());
     }
 
     public String getColor() {
@@ -29,20 +39,19 @@ public abstract class Tag {
         this.color = color;
     }
 
-    public void setColor(int r, int g, int b) {
+    public void setColorWrong(int r, int g, int b) {
        String red = Integer.toHexString(r);
        String green = Integer.toHexString(g);
        String blue = Integer.toHexString(b);
        this.setColor("#" + red+ green + blue);
     };
 
-    public static String rgbToColorString(int red, int green, int blue) {
+    public void  setColor(int red, int green, int blue) {
         red = Math.min(255, Math.max(0, red));
         green = Math.min(255, Math.max(0, green));
         blue = Math.min(255, Math.max(0, blue));
 
-        String colorString = String.format("#%02X%02X%02X", red, green, blue);
-        return colorString;
+        color = String.format("#%02X%02X%02X", red, green, blue);
 
     }
 
@@ -93,6 +102,9 @@ public abstract class Tag {
         return s1;
     }
 
+    public  boolean hasLineShift() {
+        return true;
+    }
 
     public String toHtmlString() {
         String s1 = "";
@@ -104,7 +116,9 @@ public abstract class Tag {
         }
         for (Tag tag: children) {
             String child = tag.toHtmlString();
-            s1 = s1 + child;
+            if (this.hasLineShift()) {
+            }else {
+            } s1 = s1 + (char) 10 + child;
         }
         s1 = s1 + text + "</" + tagName + ">" ;
         return s1;
@@ -120,5 +134,18 @@ public abstract class Tag {
             System.out.println(msg.getMessage());
         }
         return fileName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tag tag = (Tag) o;
+        return Objects.equals(id, tag.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -3,12 +3,18 @@ package org.example;
 public class HTag extends Tag {
     private byte number;
 
-    public HTag(int hNum) {
+
+    public HTag(int hNum, String text) {
         number = (byte) hNum;
         this.setNumber(number);
+        super.setText(text);
 
     }
 
+    public HTag (int hnum) {
+        number = (byte) hnum;
+        this.setNumber(number);
+    }
     public byte getNumber() {
         return number;
     }
